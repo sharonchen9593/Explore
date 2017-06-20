@@ -1,7 +1,7 @@
-export function selectBook(image) {
+export function selectImage(image) {
 	//need to return action object with type property
 	return {
-		type: 'BOOK_SELECTED',
+		type: 'IMAGE_SELECTED',
 		payload: image
 	}
 }

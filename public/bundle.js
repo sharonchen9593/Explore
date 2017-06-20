@@ -24746,9 +24746,13 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _picturesList = __webpack_require__(227);
+var _imageList = __webpack_require__(233);
 
-var _picturesList2 = _interopRequireDefault(_picturesList);
+var _imageList2 = _interopRequireDefault(_imageList);
+
+var _imageDetails = __webpack_require__(234);
+
+var _imageDetails2 = _interopRequireDefault(_imageDetails);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -24773,7 +24777,8 @@ var App = function (_React$Component) {
 			return React.createElement(
 				'div',
 				null,
-				React.createElement(_picturesList2.default, null)
+				React.createElement(_imageList2.default, null),
+				React.createElement(_imageDetails2.default, null)
 			);
 		}
 	}]);
@@ -24784,7 +24789,179 @@ var App = function (_React$Component) {
 exports.default = App;
 
 /***/ }),
-/* 227 */
+/* 227 */,
+/* 228 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _redux = __webpack_require__(52);
+
+var _reducer_images = __webpack_require__(229);
+
+var _reducer_images2 = _interopRequireDefault(_reducer_images);
+
+var _reducer_active_image = __webpack_require__(231);
+
+var _reducer_active_image2 = _interopRequireDefault(_reducer_active_image);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var rootReducer = (0, _redux.combineReducers)({
+	images: _reducer_images2.default,
+	activeImage: _reducer_active_image2.default
+});
+
+exports.default = rootReducer;
+
+/***/ }),
+/* 229 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+exports.default = function () {
+	return [{ title: 'image1' }, { title: 'image2' }, { title: 'image3' }, { title: 'image4' }, { title: 'image5' }];
+};
+
+/***/ }),
+/* 230 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.selectImage = selectImage;
+function selectImage(image) {
+	//need to return action object with type property
+	return {
+		type: 'IMAGE_SELECTED',
+		payload: image
+	};
+}
+
+/***/ }),
+/* 231 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+exports.default = function () {
+	var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+	var action = arguments[1];
+
+	if (action.type === "IMAGE_SELECTED") {
+		return action.payload;
+	}
+
+	return state;
+};
+
+/***/ }),
+/* 232 */,
+/* 233 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _reactRedux = __webpack_require__(87);
+
+var _index = __webpack_require__(230);
+
+var _redux = __webpack_require__(52);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var ImageList = function (_React$Component) {
+	_inherits(ImageList, _React$Component);
+
+	function ImageList() {
+		_classCallCheck(this, ImageList);
+
+		return _possibleConstructorReturn(this, (ImageList.__proto__ || Object.getPrototypeOf(ImageList)).apply(this, arguments));
+	}
+
+	_createClass(ImageList, [{
+		key: 'renderList',
+		value: function renderList() {
+			var _this2 = this;
+
+			return this.props.images.map(function (image) {
+				return React.createElement(
+					'li',
+					{
+						onClick: function onClick() {
+							return _this2.props.selectImage(image);
+						},
+						key: image.title,
+						className: 'list-group-item' },
+					image.title
+				);
+			});
+		}
+	}, {
+		key: 'render',
+		value: function render() {
+			return React.createElement(
+				'div',
+				null,
+				React.createElement(
+					'ul',
+					{ className: 'list-group col-sm-4' },
+					this.renderList()
+				)
+			);
+		}
+	}]);
+
+	return ImageList;
+}(React.Component);
+
+;
+
+function mapStateToProps(state) {
+	return {
+		images: state.images
+	};
+}
+
+function mapDispatchToProps(dispatch) {
+	return (0, _redux.bindActionCreators)({ selectImage: _index.selectImage }, dispatch);
+}
+
+exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(ImageList);
+
+/***/ }),
+/* 234 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24804,93 +24981,43 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var PicturesList = function (_React$Component) {
-	_inherits(PicturesList, _React$Component);
+var ImageDetails = function (_React$Component) {
+	_inherits(ImageDetails, _React$Component);
 
-	function PicturesList() {
-		_classCallCheck(this, PicturesList);
+	function ImageDetails() {
+		_classCallCheck(this, ImageDetails);
 
-		return _possibleConstructorReturn(this, (PicturesList.__proto__ || Object.getPrototypeOf(PicturesList)).apply(this, arguments));
+		return _possibleConstructorReturn(this, (ImageDetails.__proto__ || Object.getPrototypeOf(ImageDetails)).apply(this, arguments));
 	}
 
-	_createClass(PicturesList, [{
-		key: "renderList",
-		value: function renderList() {
-			return this.props.images.map(function (image) {
-				return React.createElement(
-					"li",
-					{ key: image.title, className: "list-group-item" },
-					image.title
-				);
-			});
-		}
-	}, {
-		key: "render",
+	_createClass(ImageDetails, [{
+		key: 'render',
 		value: function render() {
+			if (!this.props.image) {
+				return React.createElement(
+					'div',
+					null,
+					'Select Image To Get Started'
+				);
+			}
 			return React.createElement(
-				"div",
+				'div',
 				null,
-				React.createElement(
-					"ul",
-					{ className: "list-group col-sm-4" },
-					this.renderList()
-				)
+				this.props.image.title
 			);
 		}
 	}]);
 
-	return PicturesList;
+	return ImageDetails;
 }(React.Component);
-
-;
 
 function mapStateToProps(state) {
 	return {
-		images: state.images
+		image: state.activeImage
 	};
 }
 
-exports.default = (0, _reactRedux.connect)(mapStateToProps)(PicturesList);
-
-/***/ }),
-/* 228 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _redux = __webpack_require__(52);
-
-var _reducer_images = __webpack_require__(229);
-
-var _reducer_images2 = _interopRequireDefault(_reducer_images);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var rootReducer = (0, _redux.combineReducers)({
-	images: _reducer_images2.default
-});
-
-exports.default = rootReducer;
-
-/***/ }),
-/* 229 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-exports.default = function () {
-	return [{ title: 'image1' }, { title: 'image2' }, { title: 'image3' }, { title: 'image4' }, { title: 'image5' }];
-};
+exports.default = (0, _reactRedux.connect)(mapStateToProps)(ImageDetails);
 
 /***/ })
 /******/ ]);
