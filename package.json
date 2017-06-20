@@ -4,8 +4,9 @@
   "description": "",
   "main": "app.js",
   "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
     "postinstall": "cd public && npm install",
-    "start": "node app.js"
+    "start": "node app.js && webpack"
   },
   "keywords": [],
   "author": "",
