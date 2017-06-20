@@ -1,4 +1,9 @@
+
+
+
 export default function() {
+	
+	
 	return [
 		{title: 'image1'},
 		{title: 'image2'},

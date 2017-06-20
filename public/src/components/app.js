@@ -5,13 +5,13 @@ import SearchBar from '../containers/searchBar.js';
 export default class App extends React.Component {
 	
 	render() {
-		return (
-			<div>
-				<SearchBar />
-				<ImageList />
-				<ImageDetails />
-			</div>
-		);
+			return (
+				<div>
+					<SearchBar />
+					<ImageList />
+					<ImageDetails />
+				</div>
+			);
 	}
 }
 
