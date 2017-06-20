@@ -1,13 +1,14 @@
-class App extends React.Component {
+import PicturesList from './components/picturesList';
 
+class App extends React.Component {
 	
 	render() {
 		return (
 			<div>
-				Hello from React
+				<PicturesList />
 			</div>
-	);
-	}
+	)
+	};
 }
 
 ReactDOM.render(<App />, document.querySelector('.container'))
