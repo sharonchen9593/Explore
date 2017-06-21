@@ -1,8 +1,14 @@
 import axios from 'axios';
 
 const API_KEY = 'AIzaSyC60u3VSBRDeUpTyRRq-NImzW5L5GHmTDE';
+const CORS = 'https://cors-anywhere.herokuapp.com/';
+const API_URL = CORS + 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?&key=' + API_KEY + '&radius=50000&type=park&location=';
 
-const API_URL = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=37.5963,-122.0657&radius=50000&type=park&key=AIzaSyC60u3VSBRDeUpTyRRq-NImzW5L5GHmTDE';
+
+
+
+
+
 
 export const IMAGE_SELECTED = 'IMAGE_SELECTED';
 export const FETCH_IMAGES = 'FETCH_IMAGES';
@@ -17,13 +23,15 @@ export function selectImage(image) {
 
 
 
-export function fetchImages(city) {
-	// const request = api get request
-	var request = axios.get(API_URL);
+
+export function fetchImages(location) {
+	const url = API_URL + location
+	const request = axios.get(url)
 
 	return {
 		type: FETCH_IMAGES,
-		payload: console.log(request)
+		// if payload is promise, stops application until we get a response
+		payload: request
 
 	}
 }

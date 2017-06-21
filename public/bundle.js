@@ -11905,8 +11905,8 @@ var _axios2 = _interopRequireDefault(_axios);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var API_KEY = 'AIzaSyC60u3VSBRDeUpTyRRq-NImzW5L5GHmTDE';
-
-var API_URL = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=37.5963,-122.0657&radius=50000&type=park&key=AIzaSyC60u3VSBRDeUpTyRRq-NImzW5L5GHmTDE';
+var CORS = 'https://cors-anywhere.herokuapp.com/';
+var API_URL = CORS + 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?&key=' + API_KEY + '&radius=50000&type=park&location=';
 
 var IMAGE_SELECTED = exports.IMAGE_SELECTED = 'IMAGE_SELECTED';
 var FETCH_IMAGES = exports.FETCH_IMAGES = 'FETCH_IMAGES';
@@ -11919,13 +11919,14 @@ function selectImage(image) {
 	};
 }
 
-function fetchImages(city) {
-	// const request = api get request
-	var request = _axios2.default.get(API_URL);
+function fetchImages(location) {
+	var url = API_URL + location;
+	var request = _axios2.default.get(url);
 
 	return {
 		type: FETCH_IMAGES,
-		payload: console.log(request)
+		// if payload is promise, stops application until we get a response
+		payload: request
 
 	};
 }
@@ -27380,7 +27381,20 @@ var SearchBar = function (_React$Component) {
 		value: function onFormSubmit(event) {
 			event.preventDefault();
 
-			this.props.fetchImages(this.state.term);
+			var address = this.state.term.split(' ').join('').split(',');
+
+			var city = address[0];
+			var state = address[1];
+			var prop = this.props;
+			$.ajax({
+				url: "http://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=" + city + '+' + state,
+				success: function success(data) {
+					//console.log("success")
+					var loc = data.results;
+					var latlon = loc[0].geometry.location.lat + ',' + loc[0].geometry.location.lng;
+					prop.fetchImages(latlon);
+				}
+			});
 
 			this.setState({ term: '' });
 		}
@@ -27463,12 +27477,30 @@ exports.default = rootReducer;
 
 
 Object.defineProperty(exports, "__esModule", {
-	value: true
+  value: true
 });
 
 exports.default = function () {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+  var action = arguments[1];
 
-	return [{ title: 'image1' }, { title: 'image2' }, { title: 'image3' }, { title: 'image4' }, { title: 'image5' }];
+  if (action.payload) {
+    var data = action.payload.data.results;
+    var info = [];
+    data.forEach(function (item) {
+      var obj = {};
+      obj['id'] = item.id;
+      obj['title'] = item.name;
+      info.push(obj);
+    });
+  }
+
+  console.log(info);
+  if (action.type === "FETCH_IMAGES") {
+    return info;
+  }
+
+  return state;
 };
 
 /***/ }),

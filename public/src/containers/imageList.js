@@ -15,16 +15,17 @@ class ImageList extends React.Component {
 			)
 		})
 	}
-	
+
 	render() {
 		return (
 			<div>
 				<ul className="list-group col-sm-4">
+
 					{this.renderList()}
 				</ul>
 			</div>
 		);
-		
+
 	}
 };
 
@@ -39,3 +40,4 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ImageList);
+
