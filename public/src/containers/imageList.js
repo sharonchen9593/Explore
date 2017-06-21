@@ -2,17 +2,51 @@ import {connect} from 'react-redux';
 import { selectImage } from '../actions/index';
 import {bindActionCreators} from 'redux';
 
+
+
+function imageAPICall(callback, refID) {
+
+	$.ajax({
+		url: Photo_API + refID ,
+		success: function(data) {
+			callback(data)
+		},
+		async: false
+	})
+}
+
 class ImageList extends React.Component {
 
 
 	getImages() {
-		console.log("run", this.props.images)
 		if(this.props.images) {
+			var photoURL = []
 
-			console.log("this.props.images", this.props.images[0], Object.keys(this.props.images[0]))
 
+			this.props.images.forEach(function(location) {
 
+				location.photoRef.forEach(function(picture) {
+					var API_KEY = 'AIzaSyC60u3VSBRDeUpTyRRq-NImzW5L5GHmTDE';
+					var Photo_API = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&key="+ API_KEY + "&photoreference=" + picture;
+					var obj = {
+						info: location,
+						picture: Photo_API
+					}
+					photoURL.push(obj)
+				})
+
+			})
+
+			return photoURL.map((location) => {
+				return (
+					<img
+						onClick = {() =>this.props.selectImage(info)}
+						key = {location.picture}
+						src = {location.picture} />
+				)
+			})
 		}
+
 
 
 	}
@@ -34,10 +68,9 @@ class ImageList extends React.Component {
 	render() {
 		return (
 			<div>
-				<ul className="list-group col-sm-4">
-					{console.log("state", this.state)}
+				<span>
 					{this.getImages()}
-				</ul>
+				</span>
 			</div>
 		);
 
@@ -45,7 +78,6 @@ class ImageList extends React.Component {
 };
 
 function mapStateToProps(state) {
-	console.log(state)
 	return {
 		images: state.images
 	};

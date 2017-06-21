@@ -26340,6 +26340,17 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+function imageAPICall(callback, refID) {
+
+	$.ajax({
+		url: Photo_API + refID,
+		success: function success(data) {
+			callback(data);
+		},
+		async: false
+	});
+}
+
 var ImageList = function (_React$Component) {
 	_inherits(ImageList, _React$Component);
 
@@ -26352,10 +26363,32 @@ var ImageList = function (_React$Component) {
 	_createClass(ImageList, [{
 		key: 'getImages',
 		value: function getImages() {
-			console.log("run", this.props.images);
-			if (this.props.images) {
+			var _this2 = this;
 
-				console.log("this.props.images", this.props.images[0], Object.keys(this.props.images[0]));
+			if (this.props.images) {
+				var photoURL = [];
+
+				this.props.images.forEach(function (location) {
+
+					location.photoRef.forEach(function (picture) {
+						var API_KEY = 'AIzaSyC60u3VSBRDeUpTyRRq-NImzW5L5GHmTDE';
+						var Photo_API = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&key=" + API_KEY + "&photoreference=" + picture;
+						var obj = {
+							info: location,
+							picture: Photo_API
+						};
+						photoURL.push(obj);
+					});
+				});
+
+				return photoURL.map(function (location) {
+					return React.createElement('img', {
+						onClick: function onClick() {
+							return _this2.props.selectImage(info);
+						},
+						key: location.picture,
+						src: location.picture });
+				});
 			}
 		}
 
@@ -26379,9 +26412,8 @@ var ImageList = function (_React$Component) {
 				'div',
 				null,
 				React.createElement(
-					'ul',
-					{ className: 'list-group col-sm-4' },
-					console.log("state", this.state),
+					'span',
+					null,
 					this.getImages()
 				)
 			);
@@ -26394,7 +26426,6 @@ var ImageList = function (_React$Component) {
 ;
 
 function mapStateToProps(state) {
-	console.log(state);
 	return {
 		images: state.images
 	};
@@ -27317,7 +27348,7 @@ var ImageDetails = function (_React$Component) {
 				return React.createElement(
 					'div',
 					null,
-					'Select Image To Get Started'
+					'Search a city to get started'
 				);
 			}
 			return React.createElement(
@@ -27491,65 +27522,48 @@ exports.default = function () {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
   var action = arguments[1];
 
-  console.log("action", action);
-  if (action.type === "FETCH_IMAGES") {
-    //if (action.payload) {
+  if (action.payload && action.payload.data) {
     var data = action.payload.data.results;
     var info = [];
     var pictures = [];
-    var promise = Promise.resolve();
-    var j = 0;
-    for (var i = 0; i < data.length - 1; i++) {
-      var obj = {}; // id, name, photosRef
-      promise = getPictures(data[i].place_id).then(function (picData) {
-        obj.id = data[i].place_id;
-        obj.name = data[i].name;
+
+    data.forEach(function (item) {
+      var obj = {};
+      obj['id'] = item.place_id;
+      obj['title'] = item.name;
+
+      getPictures(function (picData) {
         var photoRef = [];
         picData.result.photos.forEach(function (photo) {
           photoRef.push(photo.photo_reference);
         });
-        obj.photoRef = photoRef;
-        info.push(obj);
-        j++;
-        console.log("data.length", data.length, "j", j, info);
-        if (j === data.length - 1) {
-          console.log("info", info);
-          return info;
-          // console.log(Object.assign({}, state, {info}))
-          // return Object.assign({}, state, {info});
-        }
-      });
-    }
-    // data.forEach(function(item, index) {
-    // })
 
+        obj['photoRef'] = photoRef;
+      }, item.place_id);
 
-    //}
-  } else {
-    console.log("grr");
-    return state;
+      info.push(obj);
+    });
   }
+  if (action.type === "FETCH_IMAGES") {
+    return info;
+  }
+
+  return state;
 };
 
-var _axios = __webpack_require__(243);
-
-var _axios2 = _interopRequireDefault(_axios);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function getPictures(id) {
+function getPictures(callback, id) {
 
   var API_KEY = 'AIzaSyC60u3VSBRDeUpTyRRq-NImzW5L5GHmTDE';
 
   var url = "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/details/json?placeid=" + id + "&key=" + API_KEY;
 
-  return Promise.resolve($.ajax({
+  $.ajax({
     url: url,
     success: function success(data) {
-      return data;
+      callback(data);
     },
     async: false
-  }));
+  });
 }
 
 /***/ }),

@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 class ImageDetails extends React.Component {
 	render() {
 		if(!this.props.image) {
-			return <div>Select Image To Get Started</div>
+			return <div>Search a city to get started</div>
 		}
 		return (
 			<div>
