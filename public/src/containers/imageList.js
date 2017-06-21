@@ -6,7 +6,8 @@ class ImageList extends React.Component {
 
 
 	getImages() {
-		if(this.props.images.length>0) {
+		console.log("run", this.props.images)
+		if(this.props.images) {
 
 			console.log("this.props.images", this.props.images[0], Object.keys(this.props.images[0]))
 
@@ -34,7 +35,7 @@ class ImageList extends React.Component {
 		return (
 			<div>
 				<ul className="list-group col-sm-4">
-
+					{console.log("state", this.state)}
 					{this.getImages()}
 				</ul>
 			</div>
@@ -44,6 +45,7 @@ class ImageList extends React.Component {
 };
 
 function mapStateToProps(state) {
+	console.log(state)
 	return {
 		images: state.images
 	};

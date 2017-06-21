@@ -26352,7 +26352,8 @@ var ImageList = function (_React$Component) {
 	_createClass(ImageList, [{
 		key: 'getImages',
 		value: function getImages() {
-			if (this.props.images.length > 0) {
+			console.log("run", this.props.images);
+			if (this.props.images) {
 
 				console.log("this.props.images", this.props.images[0], Object.keys(this.props.images[0]));
 			}
@@ -26380,6 +26381,7 @@ var ImageList = function (_React$Component) {
 				React.createElement(
 					'ul',
 					{ className: 'list-group col-sm-4' },
+					console.log("state", this.state),
 					this.getImages()
 				)
 			);
@@ -26392,6 +26394,7 @@ var ImageList = function (_React$Component) {
 ;
 
 function mapStateToProps(state) {
+	console.log(state);
 	return {
 		images: state.images
 	};
@@ -27485,50 +27488,68 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 exports.default = function () {
-  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
   var action = arguments[1];
 
-  if (action.payload && action.payload.data) {
+  console.log("action", action);
+  if (action.type === "FETCH_IMAGES") {
+    //if (action.payload) {
     var data = action.payload.data.results;
     var info = [];
     var pictures = [];
-
-    data.forEach(function (item) {
-      var obj = {};
-      obj['id'] = item.place_id;
-      obj['title'] = item.name;
-
-      getPictures(function (picData) {
+    var promise = Promise.resolve();
+    var j = 0;
+    for (var i = 0; i < data.length - 1; i++) {
+      var obj = {}; // id, name, photosRef
+      promise = getPictures(data[i].place_id).then(function (picData) {
+        obj.id = data[i].place_id;
+        obj.name = data[i].name;
         var photoRef = [];
         picData.result.photos.forEach(function (photo) {
           photoRef.push(photo.photo_reference);
         });
+        obj.photoRef = photoRef;
+        info.push(obj);
+        j++;
+        console.log("data.length", data.length, "j", j, info);
+        if (j === data.length - 1) {
+          console.log("info", info);
+          return info;
+          // console.log(Object.assign({}, state, {info}))
+          // return Object.assign({}, state, {info});
+        }
+      });
+    }
+    // data.forEach(function(item, index) {
+    // })
 
-        obj['photoRef'] = photoRef;
-      }, item.place_id);
 
-      info.push(obj);
-    });
+    //}
+  } else {
+    console.log("grr");
+    return state;
   }
-  if (action.type === "FETCH_IMAGES") {
-    return info;
-  }
-
-  return state;
 };
 
-function getPictures(callback, id) {
+var _axios = __webpack_require__(243);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function getPictures(id) {
 
   var API_KEY = 'AIzaSyC60u3VSBRDeUpTyRRq-NImzW5L5GHmTDE';
 
   var url = "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/details/json?placeid=" + id + "&key=" + API_KEY;
 
-  $.ajax({
+  return Promise.resolve($.ajax({
     url: url,
     success: function success(data) {
-      callback(data);
-    }
-  });
+      return data;
+    },
+    async: false
+  }));
 }
 
 /***/ }),
