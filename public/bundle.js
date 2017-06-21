@@ -26350,23 +26350,27 @@ var ImageList = function (_React$Component) {
 	}
 
 	_createClass(ImageList, [{
-		key: 'renderList',
-		value: function renderList() {
-			var _this2 = this;
+		key: 'getImages',
+		value: function getImages() {
+			if (this.props.images.length > 0) {
 
-			return this.props.images.map(function (image) {
-				return React.createElement(
-					'li',
-					{
-						onClick: function onClick() {
-							return _this2.props.selectImage(image);
-						},
-						key: image.title,
-						className: 'list-group-item' },
-					image.title
-				);
-			});
+				console.log("this.props.images", this.props.images[0], Object.keys(this.props.images[0]));
+			}
 		}
+
+		// renderList() {
+		// 	return this.props.images.map((image) => {
+		// 		return (
+		// 			<li
+		// 				onClick={()=>this.props.selectImage(image)}
+		// 				key={image.title}
+		// 				className="list-group-item">
+		// 				{image.title}
+		// 			</li>
+		// 		)
+		// 	})
+		// }
+
 	}, {
 		key: 'render',
 		value: function render() {
@@ -26376,7 +26380,7 @@ var ImageList = function (_React$Component) {
 				React.createElement(
 					'ul',
 					{ className: 'list-group col-sm-4' },
-					this.renderList()
+					this.getImages()
 				)
 			);
 		}
@@ -27484,24 +27488,48 @@ exports.default = function () {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
   var action = arguments[1];
 
-  if (action.payload) {
+  if (action.payload && action.payload.data) {
     var data = action.payload.data.results;
     var info = [];
+    var pictures = [];
+
     data.forEach(function (item) {
       var obj = {};
-      obj['id'] = item.id;
+      obj['id'] = item.place_id;
       obj['title'] = item.name;
+
+      getPictures(function (picData) {
+        var photoRef = [];
+        picData.result.photos.forEach(function (photo) {
+          photoRef.push(photo.photo_reference);
+        });
+
+        obj['photoRef'] = photoRef;
+      }, item.place_id);
+
       info.push(obj);
     });
   }
-
-  console.log(info);
   if (action.type === "FETCH_IMAGES") {
     return info;
   }
 
   return state;
 };
+
+function getPictures(callback, id) {
+
+  var API_KEY = 'AIzaSyC60u3VSBRDeUpTyRRq-NImzW5L5GHmTDE';
+
+  var url = "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/details/json?placeid=" + id + "&key=" + API_KEY;
+
+  $.ajax({
+    url: url,
+    success: function success(data) {
+      callback(data);
+    }
+  });
+}
 
 /***/ }),
 /* 266 */

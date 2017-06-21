@@ -3,25 +3,39 @@ import { selectImage } from '../actions/index';
 import {bindActionCreators} from 'redux';
 
 class ImageList extends React.Component {
-	renderList() {
-		return this.props.images.map((image) => {
-			return (
-				<li
-					onClick={()=>this.props.selectImage(image)}
-					key={image.title}
-					className="list-group-item">
-					{image.title}
-				</li>
-			)
-		})
+
+
+	getImages() {
+		if(this.props.images.length>0) {
+
+			console.log("this.props.images", this.props.images[0], Object.keys(this.props.images[0]))
+
+
+		}
+
+
 	}
+
+
+	// renderList() {
+	// 	return this.props.images.map((image) => {
+	// 		return (
+	// 			<li
+	// 				onClick={()=>this.props.selectImage(image)}
+	// 				key={image.title}
+	// 				className="list-group-item">
+	// 				{image.title}
+	// 			</li>
+	// 		)
+	// 	})
+	// }
 
 	render() {
 		return (
 			<div>
 				<ul className="list-group col-sm-4">
 
-					{this.renderList()}
+					{this.getImages()}
 				</ul>
 			</div>
 		);
