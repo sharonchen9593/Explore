@@ -27387,7 +27387,7 @@ var SearchBar = function (_React$Component) {
 			var state = address[1];
 			var prop = this.props;
 			$.ajax({
-				url: "http://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=" + city + '+' + state,
+				url: "https://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=" + city + '+' + state,
 				success: function success(data) {
 					//console.log("success")
 					var loc = data.results;
